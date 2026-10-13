@@ -21,6 +21,9 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5181, // el mismo de VITE_API_URL en .env.development
+      // Todas las direcciones (IPv4 e IPv6): "localhost" puede resolverse a 127.0.0.1 o a ::1
+      // según el navegador, y Vite por defecto solo escucha en una de ellas.
+      host: true,
       strictPort: true,
       proxy: { '/api': proxy, '/ws': { ...proxy, ws: true } },
     },
