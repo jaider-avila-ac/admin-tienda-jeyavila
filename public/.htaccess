@@ -1,0 +1,15 @@
+# Panel privado: ningún buscador debe indexarlo. El encabezado aplica a TODAS las respuestas
+# (páginas, JS, CSS, imágenes), no solo al HTML como la etiqueta <meta name="robots">.
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  RewriteRule ^ index.html [L]
+</IfModule>

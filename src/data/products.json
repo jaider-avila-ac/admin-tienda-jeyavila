@@ -1,0 +1,154 @@
+[
+  {
+    "id": 1,
+    "cat_id": 1, "sub_id": 1,
+    "nombre": "Tenis Urban Pro", "slug": "tenis-urban-pro",
+    "descripcion": "Tenis casual con suela EVA ultracómoda. Perfecto para el día a día.",
+    "precio": 189900, "precio_antes": 229900,
+    "ficha_tecnica": { "marca": "Nike", "material": "Textil", "genero": "Hombre" },
+    "activo": true,
+    "variantes": [
+      { "id": 1,  "talla": "38", "color": "Negro", "color_hex": "#1a1a1a", "stock": 5, "activo": true },
+      { "id": 2,  "talla": "39", "color": "Negro", "color_hex": "#1a1a1a", "stock": 3, "activo": true },
+      { "id": 3,  "talla": "40", "color": "Negro", "color_hex": "#1a1a1a", "stock": 0, "activo": true },
+      { "id": 4,  "talla": "38", "color": "Blanco","color_hex": "#f5f5f5", "stock": 8, "activo": true },
+      { "id": 5,  "talla": "39", "color": "Blanco","color_hex": "#f5f5f5", "stock": 4, "activo": true },
+      { "id": 6,  "talla": "40", "color": "Gris",  "color_hex": "#9ca3af", "stock": 4, "activo": true }
+    ],
+    "imagenes": [
+      { "id": 1, "url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-01-15"
+  },
+  {
+    "id": 2,
+    "cat_id": 1, "sub_id": 4,
+    "nombre": "Mocasín Ejecutivo", "slug": "mocasin-ejecutivo",
+    "descripcion": "Mocasín formal de cuero genuino. Ideal para reuniones y eventos corporativos.",
+    "precio": 245000, "precio_antes": null,
+    "ficha_tecnica": { "marca": "Clarks", "material": "Cuero", "genero": "Hombre" },
+    "activo": true,
+    "variantes": [
+      { "id": 7,  "talla": "39", "color": "Negro", "color_hex": "#1a1a1a", "stock": 4, "activo": true },
+      { "id": 8,  "talla": "40", "color": "Negro", "color_hex": "#1a1a1a", "stock": 4, "activo": true },
+      { "id": 9,  "talla": "41", "color": "Negro", "color_hex": "#1a1a1a", "stock": 0, "activo": true },
+      { "id": 10, "talla": "40", "color": "Café",  "color_hex": "#92400e", "stock": 4, "activo": true }
+    ],
+    "imagenes": [
+      { "id": 2, "url": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-01-20"
+  },
+  {
+    "id": 3,
+    "cat_id": 3, "sub_id": 6,
+    "nombre": "Sandalia Playa", "slug": "sandalia-playa",
+    "descripcion": "Sandalia resistente al agua. Perfecta para playa y piscina.",
+    "precio": 79900, "precio_antes": 99900,
+    "ficha_tecnica": { "marca": "Calzacaribe", "material": "Caucho", "genero": "Unisex" },
+    "activo": true,
+    "variantes": [
+      { "id": 11, "talla": "36", "color": "Azul", "color_hex": "#2563eb", "stock": 15, "activo": true },
+      { "id": 12, "talla": "37", "color": "Azul", "color_hex": "#2563eb", "stock": 12, "activo": true },
+      { "id": 13, "talla": "36", "color": "Rojo", "color_hex": "#dc2626", "stock": 10, "activo": true },
+      { "id": 14, "talla": "37", "color": "Rojo", "color_hex": "#dc2626", "stock": 8,  "activo": true }
+    ],
+    "imagenes": [
+      { "id": 3, "url": "https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-02-01"
+  },
+  {
+    "id": 4,
+    "cat_id": 1, "sub_id": 2,
+    "nombre": "Running Elite", "slug": "running-elite",
+    "descripcion": "Zapatilla de running con tecnología de amortiguación superior.",
+    "precio": 329000, "precio_antes": 389000,
+    "ficha_tecnica": { "marca": "Adidas", "material": "Malla", "genero": "Hombre" },
+    "activo": true,
+    "variantes": [
+      { "id": 15, "talla": "38", "color": "Negro/Rojo",  "color_hex": "#1a1a1a", "stock": 3, "activo": true },
+      { "id": 16, "talla": "39", "color": "Negro/Rojo",  "color_hex": "#1a1a1a", "stock": 2, "activo": true },
+      { "id": 17, "talla": "40", "color": "Negro/Rojo",  "color_hex": "#1a1a1a", "stock": 0, "activo": true },
+      { "id": 18, "talla": "39", "color": "Blanco/Azul", "color_hex": "#f5f5f5", "stock": 3, "activo": true }
+    ],
+    "imagenes": [
+      { "id": 4, "url": "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-02-10"
+  },
+  {
+    "id": 5,
+    "cat_id": 2, "sub_id": 5,
+    "nombre": "Botín Casual Mujer", "slug": "botin-casual-mujer",
+    "descripcion": "Botín elegante con tacón pequeño. Versátil para múltiples ocasiones.",
+    "precio": 215000, "precio_antes": 259000,
+    "ficha_tecnica": { "marca": "Calzacaribe", "material": "Cuero sintético", "genero": "Mujer" },
+    "activo": true,
+    "variantes": [
+      { "id": 19, "talla": "35", "color": "Negro", "color_hex": "#1a1a1a", "stock": 4, "activo": true },
+      { "id": 20, "talla": "36", "color": "Negro", "color_hex": "#1a1a1a", "stock": 3, "activo": true },
+      { "id": 21, "talla": "37", "color": "Camel", "color_hex": "#c2956c", "stock": 5, "activo": true },
+      { "id": 22, "talla": "36", "color": "Vino",  "color_hex": "#7f1d1d", "stock": 3, "activo": true }
+    ],
+    "imagenes": [
+      { "id": 5, "url": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-02-15"
+  },
+  {
+    "id": 6,
+    "cat_id": 4, "sub_id": 7,
+    "nombre": "Tenis Niño Sport", "slug": "tenis-nino-sport",
+    "descripcion": "Tenis deportivo para niños con cierre velcro. Resistente y cómodo.",
+    "precio": 125000, "precio_antes": null,
+    "ficha_tecnica": { "marca": "Puma", "material": "Textil", "genero": "Niño" },
+    "activo": true,
+    "variantes": [
+      { "id": 23, "talla": "28", "color": "Azul",  "color_hex": "#2563eb", "stock": 10, "activo": true },
+      { "id": 24, "talla": "30", "color": "Azul",  "color_hex": "#2563eb", "stock": 8,  "activo": true },
+      { "id": 25, "talla": "28", "color": "Verde",  "color_hex": "#16a34a", "stock": 7,  "activo": true },
+      { "id": 26, "talla": "30", "color": "Rojo",  "color_hex": "#dc2626", "stock": 5,  "activo": true }
+    ],
+    "imagenes": [
+      { "id": 6, "url": "https://images.unsplash.com/photo-1514989771522-458c9b6c035a?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-03-01"
+  },
+  {
+    "id": 7,
+    "cat_id": 1, "sub_id": 4,
+    "nombre": "Oxford Clásico", "slug": "oxford-clasico",
+    "descripcion": "Zapato Oxford de cuero con acabado mate. El clásico de siempre.",
+    "precio": 299000, "precio_antes": null,
+    "ficha_tecnica": { "marca": "Clarks", "material": "Cuero", "genero": "Hombre" },
+    "activo": true,
+    "variantes": [
+      { "id": 27, "talla": "40", "color": "Negro",       "color_hex": "#1a1a1a", "stock": 2, "activo": true },
+      { "id": 28, "talla": "41", "color": "Negro",       "color_hex": "#1a1a1a", "stock": 1, "activo": true },
+      { "id": 29, "talla": "42", "color": "Café oscuro", "color_hex": "#451a03", "stock": 3, "activo": true }
+    ],
+    "imagenes": [
+      { "id": 7, "url": "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-03-05"
+  },
+  {
+    "id": 8,
+    "cat_id": 2, "sub_id": 3,
+    "nombre": "Zapatilla Mujer Flex", "slug": "zapatilla-mujer-flex",
+    "descripcion": "Zapatilla liviana con plantilla memory foam. Ultra cómoda.",
+    "precio": 159000, "precio_antes": 189000,
+    "ficha_tecnica": { "marca": "New Balance", "material": "Malla", "genero": "Mujer" },
+    "activo": false,
+    "variantes": [
+      { "id": 30, "talla": "35", "color": "Rosa",   "color_hex": "#fbcfe8", "stock": 0, "activo": true },
+      { "id": 31, "talla": "36", "color": "Blanco", "color_hex": "#f5f5f5", "stock": 0, "activo": true },
+      { "id": 32, "talla": "37", "color": "Morado", "color_hex": "#7c3aed", "stock": 0, "activo": true }
+    ],
+    "imagenes": [
+      { "id": 8, "url": "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400", "tipo": "imagen", "orden": 0 }
+    ],
+    "creado_en": "2024-03-10"
+  }
+]

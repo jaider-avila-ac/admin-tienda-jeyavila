@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Títulos con la tipografía del sitio de Jey Avila */
+h1, h2 {
+  font-family: 'Unbounded', sans-serif;
+}
+
+:root {
+  /* Rojo de Jey Avila (#CF001B), el mismo de su sitio web */
+  --admin-accent: #CF001B;
+  --admin-accent-hover: #A50016;
+  --admin-accent-soft: rgba(207, 0, 27, 0.12);
+  --admin-accent-subtle: #f4f4f4;
+  --admin-accent-contrast: #ffffff;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-black;
+  }
+
+  .dark body {
+    @apply bg-gray-950 text-gray-100;
+  }
+}
+
+@layer components {
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-150 cursor-pointer;
+  }
+  .sidebar-item-active {
+    background-color: var(--admin-accent);
+    color: var(--admin-accent-contrast);
+  }
+  .sidebar-item-inactive {
+    @apply text-gray-400 hover:bg-gray-800 hover:text-white;
+  }
+  .sidebar-group-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-gray-500 px-3 mb-1 mt-4;
+  }
+  .stat-card {
+    @apply bg-white p-5 shadow-sm border border-gray-100;
+  }
+  .page-title {
+    @apply text-2xl font-bold text-black;
+  }
+  .page-subtitle {
+    @apply text-sm text-gray-500 mt-0.5;
+  }
+  .btn-primary {
+    @apply text-white px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2;
+    /* Botón principal en el rojo de Jey Avila */
+    background-color: var(--admin-accent);
+  }
+  .btn-primary:hover { background-color: var(--admin-accent-hover); }
+  .btn-secondary {
+    @apply bg-white text-black border border-gray-200 px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition-colors flex items-center gap-2;
+  }
+  .table-header {
+    @apply text-xs font-semibold text-gray-500 uppercase tracking-wide;
+  }
+  .table-cell {
+    @apply py-3.5 px-4 text-sm text-gray-700;
+  }
+  .section-card {
+    @apply bg-white shadow-sm border border-gray-100 overflow-hidden;
+  }
+  .input-field {
+    @apply w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all;
+  }
+  .label-field {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+}
+
+@layer utilities {
+  .bg-admin-accent {
+    background-color: var(--admin-accent);
+  }
+
+  .bg-admin-accent-hover {
+    background-color: var(--admin-accent-hover);
+  }
+
+  .bg-admin-accent-soft {
+    background-color: var(--admin-accent-soft);
+  }
+
+  .bg-admin-accent-subtle {
+    background-color: var(--admin-accent-subtle);
+  }
+
+  .text-admin-accent {
+    color: var(--admin-accent);
+  }
+
+  .text-admin-accent-contrast {
+    color: var(--admin-accent-contrast);
+  }
+
+  .border-admin-accent {
+    border-color: var(--admin-accent);
+  }
+
+  .text-icon-mono {
+    color: #000000;
+  }
+
+  .dark .text-icon-mono {
+    color: var(--admin-accent) !important;
+  }
+
+  .hover\:bg-admin-accent-hover:hover {
+    background-color: var(--admin-accent-hover);
+  }
+
+  .dark .bg-white,
+  .dark .bg-gray-50 {
+    background-color: #111827 !important;
+  }
+
+  .dark .bg-gray-100 {
+    background-color: #1f2937 !important;
+  }
+
+  .dark .bg-gray-800,
+  .dark .bg-violet-950 {
+    background-color: #030712 !important;
+  }
+
+  .dark .text-black,
+  .dark .text-gray-700,
+  .dark .text-gray-600 {
+    color: #f9fafb !important;
+  }
+
+  .dark .text-gray-500,
+  .dark .text-gray-400 {
+    color: #9ca3af !important;
+  }
+
+  .dark .border-gray-50,
+  .dark .border-gray-100,
+  .dark .border-gray-200 {
+    border-color: #263244 !important;
+  }
+
+  .dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #263244 !important;
+  }
+
+  .dark .section-card,
+  .dark .stat-card {
+    background-color: #111827 !important;
+    border-color: #263244 !important;
+    box-shadow: none !important;
+  }
+
+  .dark .input-field {
+    background-color: #0b1220 !important;
+    border-color: #263244 !important;
+    color: #f9fafb !important;
+  }
+
+  .dark .input-field::placeholder {
+    color: #6b7280 !important;
+  }
+
+  .dark .label-field,
+  .dark .table-header {
+    color: #9ca3af !important;
+  }
+
+  .dark .table-cell {
+    color: #d1d5db !important;
+  }
+
+  .dark .btn-secondary {
+    background-color: #111827 !important;
+    border-color: #263244 !important;
+    color: #f9fafb !important;
+  }
+
+  .dark .btn-primary {
+    background-color: var(--admin-accent) !important;
+    color: #ffffff !important;
+  }
+
+  .dark .hover\:bg-gray-50:hover,
+  .dark .hover\:bg-gray-100:hover {
+    background-color: #1f2937 !important;
+  }
+
+  .dark .hover\:text-black:hover {
+    color: #f9fafb !important;
+  }
+
+  .dark .bg-admin-accent.text-admin-accent-contrast,
+  .dark .bg-yellow-400.text-black {
+    color: var(--admin-accent-contrast) !important;
+  }
+}
+
+/* Scrollbar estilizado */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

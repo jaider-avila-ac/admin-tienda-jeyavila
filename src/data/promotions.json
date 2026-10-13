@@ -1,0 +1,7 @@
+[
+  { "id": 1, "nombre": "Descuento Temporada", "codigo": "TEMP20", "tipo": "porcentaje", "valor": 20, "minCompra": 150000, "usos": 45, "maxUsos": 100, "inicio": "2024-03-01", "fin": "2024-03-31", "activo": true },
+  { "id": 2, "nombre": "Envío Gratis", "codigo": "FREESHIP", "tipo": "envio_gratis", "valor": 0, "minCompra": 200000, "usos": 23, "maxUsos": 50, "inicio": "2024-03-15", "fin": "2024-04-15", "activo": true },
+  { "id": 3, "nombre": "Bienvenida", "codigo": "BIENVENIDO15", "tipo": "porcentaje", "valor": 15, "minCompra": 0, "usos": 12, "maxUsos": 200, "inicio": "2024-01-01", "fin": "2024-12-31", "activo": true },
+  { "id": 4, "nombre": "Descuento Fijo", "codigo": "AHORRA30", "tipo": "fijo", "valor": 30000, "minCompra": 250000, "usos": 8, "maxUsos": 30, "inicio": "2024-02-01", "fin": "2024-03-20", "activo": false },
+  { "id": 5, "nombre": "Día del Padre", "codigo": "PADRES25", "tipo": "porcentaje", "valor": 25, "minCompra": 180000, "usos": 0, "maxUsos": 80, "inicio": "2024-06-01", "fin": "2024-06-20", "activo": false }
+]

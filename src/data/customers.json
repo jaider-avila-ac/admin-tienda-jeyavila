@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1, "email": "maria.garcia@email.com", "provider": "EMAIL", "activo": true, "creado_en": "2023-09-12",
+    "nombre": "María", "apellido": "García",
+    "tipo_documento": "CC", "numero_documento": "1040123456",
+    "fecha_nacimiento": "1990-05-15",
+    "telefono": "3015550101", "ciudad": "Barranquilla",
+    "acepta_promo": true,
+    "total_pedidos": 5, "total_gastado": 876000
+  },
+  {
+    "id": 2, "email": "c.rodriguez@email.com", "provider": "EMAIL", "activo": true, "creado_en": "2023-10-05",
+    "nombre": "Carlos", "apellido": "Rodríguez",
+    "tipo_documento": "CC", "numero_documento": "1020456789",
+    "fecha_nacimiento": "1985-11-22",
+    "telefono": "3105550202", "ciudad": "Cartagena",
+    "acepta_promo": false,
+    "total_pedidos": 3, "total_gastado": 520000
+  },
+  {
+    "id": 3, "email": "ana.martinez@email.com", "provider": "GOOGLE", "activo": true, "creado_en": "2023-08-20",
+    "nombre": "Ana", "apellido": "Martínez",
+    "tipo_documento": "CC", "numero_documento": "1030789012",
+    "fecha_nacimiento": "1993-03-08",
+    "telefono": "3155550303", "ciudad": "Santa Marta",
+    "acepta_promo": true,
+    "total_pedidos": 8, "total_gastado": 1450000
+  },
+  {
+    "id": 4, "email": "jorge.lopez@email.com", "provider": "EMAIL", "activo": true, "creado_en": "2024-01-15",
+    "nombre": "Jorge", "apellido": "López",
+    "tipo_documento": "CC", "numero_documento": "1045234567",
+    "fecha_nacimiento": "1988-07-30",
+    "telefono": "3205550404", "ciudad": "Barranquilla",
+    "acepta_promo": true,
+    "total_pedidos": 1, "total_gastado": 189900
+  },
+  {
+    "id": 5, "email": "sofia.h@email.com", "provider": "EMAIL", "activo": true, "creado_en": "2023-11-30",
+    "nombre": "Sofía", "apellido": "Herrera",
+    "tipo_documento": "CE", "numero_documento": "987654321",
+    "fecha_nacimiento": "1995-12-10",
+    "telefono": "3185550505", "ciudad": "Montería",
+    "acepta_promo": true,
+    "total_pedidos": 4, "total_gastado": 695000
+  },
+  {
+    "id": 6, "email": "l.torres@email.com", "provider": "EMAIL", "activo": false, "creado_en": "2024-02-08",
+    "nombre": "Luis", "apellido": "Torres",
+    "tipo_documento": "CC", "numero_documento": "1055678901",
+    "fecha_nacimiento": "1982-09-14",
+    "telefono": "3125550606", "ciudad": "Barranquilla",
+    "acepta_promo": false,
+    "total_pedidos": 2, "total_gastado": 389000
+  },
+  {
+    "id": 7, "email": "vcastro@email.com", "provider": "GOOGLE", "activo": true, "creado_en": "2023-07-18",
+    "nombre": "Valentina", "apellido": "Castro",
+    "tipo_documento": "CC", "numero_documento": "1061234567",
+    "fecha_nacimiento": "1997-02-25",
+    "telefono": "3165550707", "ciudad": "Cartagena",
+    "acepta_promo": true,
+    "total_pedidos": 6, "total_gastado": 1120000
+  },
+  {
+    "id": 8, "email": "a.morales@email.com", "provider": "EMAIL", "activo": true, "creado_en": "2024-03-01",
+    "nombre": "Andrés", "apellido": "Morales",
+    "tipo_documento": "TI", "numero_documento": "1002345678",
+    "fecha_nacimiento": "2001-06-18",
+    "telefono": "3195550808", "ciudad": "Sincelejo",
+    "acepta_promo": true,
+    "total_pedidos": 2, "total_gastado": 344000
+  }
+]

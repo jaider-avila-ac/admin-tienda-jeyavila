@@ -1,0 +1,9 @@
+[
+  { "id": 1, "cat_id": 1, "nombre": "Tenis",     "slug": "tenis-hombre",   "orden": 1, "activo": true },
+  { "id": 2, "cat_id": 1, "nombre": "Deportivo", "slug": "deportivo",      "orden": 2, "activo": true },
+  { "id": 3, "cat_id": 2, "nombre": "Zapatillas","slug": "zapatillas",     "orden": 1, "activo": true },
+  { "id": 4, "cat_id": 2, "nombre": "Formal",    "slug": "formal-mujer",   "orden": 2, "activo": true },
+  { "id": 5, "cat_id": 2, "nombre": "Botines",   "slug": "botines",        "orden": 3, "activo": true },
+  { "id": 6, "cat_id": 3, "nombre": "Playa",     "slug": "playa",          "orden": 1, "activo": true },
+  { "id": 7, "cat_id": 4, "nombre": "Tenis niño","slug": "tenis-nino",     "orden": 1, "activo": true }
+]

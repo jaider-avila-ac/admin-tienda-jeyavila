@@ -1,0 +1,6 @@
+[
+  { "id": 1, "nombre": "Hombre",    "slug": "hombre",    "imagen_url": null, "orden": 1, "activo": true },
+  { "id": 2, "nombre": "Mujer",     "slug": "mujer",     "imagen_url": null, "orden": 2, "activo": true },
+  { "id": 3, "nombre": "Sandalias", "slug": "sandalias", "imagen_url": null, "orden": 3, "activo": true },
+  { "id": 4, "nombre": "Niños",     "slug": "ninos",     "imagen_url": null, "orden": 4, "activo": true }
+]

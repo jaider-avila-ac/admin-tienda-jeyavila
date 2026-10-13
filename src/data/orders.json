@@ -1,0 +1,81 @@
+[
+  {
+    "id": 1001, "numero": "CAL-2024-001",
+    "usr_id": 1, "cliente_nombre": "María García",
+    "estado": "entregado", "creado_en": "2024-03-18",
+    "dir_snapshot": { "nombre_destinatario": "María García", "telefono": "3015550101", "ciudad": "Barranquilla", "departamento": "Atlántico", "direccion": "Cra 54 # 68-23" },
+    "subtotal": 269800, "descuento": 0, "envio": 0, "total": 269800,
+    "pago": { "metodo": "CARD", "proveedor": "WOMPI", "estado": "APPROVED" },
+    "items": [
+      { "id": 1, "prd_id": 1, "var_id": 1, "nombre_snap": "Tenis Urban Pro", "imagen_snap": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", "variantes_snap": { "talla": "38", "color": "Negro" }, "precio_unitario": 189900, "descuento_unitario": 0, "cantidad": 1, "subtotal": 189900 },
+      { "id": 2, "prd_id": 3, "var_id": 12, "nombre_snap": "Sandalia Playa", "imagen_snap": "https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400", "variantes_snap": { "talla": "37", "color": "Azul" }, "precio_unitario": 79900, "descuento_unitario": 0, "cantidad": 1, "subtotal": 79900 }
+    ]
+  },
+  {
+    "id": 1002, "numero": "CAL-2024-002",
+    "usr_id": 3, "cliente_nombre": "Ana Martínez",
+    "estado": "enviado", "creado_en": "2024-03-17",
+    "dir_snapshot": { "nombre_destinatario": "Ana Martínez", "telefono": "3155550303", "ciudad": "Santa Marta", "departamento": "Magdalena", "direccion": "Calle 20 # 3-45" },
+    "subtotal": 329000, "descuento": 0, "envio": 12000, "total": 341000,
+    "pago": { "metodo": "NEQUI", "proveedor": "WOMPI", "estado": "APPROVED" },
+    "items": [
+      { "id": 3, "prd_id": 4, "var_id": 16, "nombre_snap": "Running Elite", "imagen_snap": "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400", "variantes_snap": { "talla": "39", "color": "Negro/Rojo" }, "precio_unitario": 329000, "descuento_unitario": 0, "cantidad": 1, "subtotal": 329000 }
+    ]
+  },
+  {
+    "id": 1003, "numero": "CAL-2024-003",
+    "usr_id": 7, "cliente_nombre": "Valentina Castro",
+    "estado": "preparando", "creado_en": "2024-03-17",
+    "dir_snapshot": { "nombre_destinatario": "Valentina Castro", "telefono": "3165550707", "ciudad": "Cartagena", "departamento": "Bolívar", "direccion": "Av. Blas de Lezo # 12-34" },
+    "subtotal": 460000, "descuento": 0, "envio": 0, "total": 460000,
+    "pago": { "metodo": "PSE", "proveedor": "WOMPI", "estado": "APPROVED" },
+    "items": [
+      { "id": 4, "prd_id": 2, "var_id": 8,  "nombre_snap": "Mocasín Ejecutivo",  "imagen_snap": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400", "variantes_snap": { "talla": "40", "color": "Negro" }, "precio_unitario": 245000, "descuento_unitario": 0, "cantidad": 1, "subtotal": 245000 },
+      { "id": 5, "prd_id": 5, "var_id": 22, "nombre_snap": "Botín Casual Mujer", "imagen_snap": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400", "variantes_snap": { "talla": "36", "color": "Vino" }, "precio_unitario": 215000, "descuento_unitario": 0, "cantidad": 1, "subtotal": 215000 }
+    ]
+  },
+  {
+    "id": 1004, "numero": "CAL-2024-004",
+    "usr_id": 4, "cliente_nombre": "Jorge López",
+    "estado": "pendiente_pago", "creado_en": "2024-03-16",
+    "dir_snapshot": { "nombre_destinatario": "Jorge López", "telefono": "3205550404", "ciudad": "Barranquilla", "departamento": "Atlántico", "direccion": "Cra 43 # 84-12" },
+    "subtotal": 189900, "descuento": 0, "envio": 12000, "total": 201900,
+    "pago": { "metodo": "NEQUI", "proveedor": "WOMPI", "estado": "PENDING" },
+    "items": [
+      { "id": 6, "prd_id": 1, "var_id": 4, "nombre_snap": "Tenis Urban Pro", "imagen_snap": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", "variantes_snap": { "talla": "40", "color": "Blanco" }, "precio_unitario": 189900, "descuento_unitario": 0, "cantidad": 1, "subtotal": 189900 }
+    ]
+  },
+  {
+    "id": 1005, "numero": "CAL-2024-005",
+    "usr_id": 2, "cliente_nombre": "Carlos Rodríguez",
+    "estado": "entregado", "creado_en": "2024-03-15",
+    "dir_snapshot": { "nombre_destinatario": "Carlos Rodríguez", "telefono": "3105550202", "ciudad": "Cartagena", "departamento": "Bolívar", "direccion": "Bocagrande Cra 3 # 8-21" },
+    "subtotal": 125000, "descuento": 0, "envio": 0, "total": 125000,
+    "pago": { "metodo": "CARD", "proveedor": "WOMPI", "estado": "APPROVED" },
+    "items": [
+      { "id": 7, "prd_id": 6, "var_id": 23, "nombre_snap": "Tenis Niño Sport", "imagen_snap": "https://images.unsplash.com/photo-1514989771522-458c9b6c035a?w=400", "variantes_snap": { "talla": "28", "color": "Azul" }, "precio_unitario": 125000, "descuento_unitario": 0, "cantidad": 1, "subtotal": 125000 }
+    ]
+  },
+  {
+    "id": 1006, "numero": "CAL-2024-006",
+    "usr_id": 5, "cliente_nombre": "Sofía Herrera",
+    "estado": "cancelado", "creado_en": "2024-03-14",
+    "dir_snapshot": { "nombre_destinatario": "Sofía Herrera", "telefono": "3185550505", "ciudad": "Montería", "departamento": "Córdoba", "direccion": "Calle 29 # 7-15" },
+    "subtotal": 215000, "descuento": 0, "envio": 12000, "total": 227000,
+    "pago": { "metodo": "NEQUI", "proveedor": "WOMPI", "estado": "VOIDED" },
+    "items": [
+      { "id": 8, "prd_id": 5, "var_id": 21, "nombre_snap": "Botín Casual Mujer", "imagen_snap": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400", "variantes_snap": { "talla": "37", "color": "Camel" }, "precio_unitario": 215000, "descuento_unitario": 0, "cantidad": 1, "subtotal": 215000 }
+    ]
+  },
+  {
+    "id": 1007, "numero": "CAL-2024-007",
+    "usr_id": 8, "cliente_nombre": "Andrés Morales",
+    "estado": "entregado", "creado_en": "2024-03-13",
+    "dir_snapshot": { "nombre_destinatario": "Andrés Morales", "telefono": "3195550808", "ciudad": "Sincelejo", "departamento": "Sucre", "direccion": "Cra 25 # 18-42" },
+    "subtotal": 299000, "descuento": 0, "envio": 0, "total": 299000,
+    "pago": { "metodo": "PSE", "proveedor": "WOMPI", "estado": "APPROVED" },
+    "items": [
+      { "id": 9, "prd_id": 7, "var_id": 27, "nombre_snap": "Oxford Clásico", "imagen_snap": "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400", "variantes_snap": { "talla": "40", "color": "Negro" }, "precio_unitario": 299000, "descuento_unitario": 0, "cantidad": 1, "subtotal": 299000 }
+    ]
+  }
+]

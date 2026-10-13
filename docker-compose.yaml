@@ -1,0 +1,22 @@
+name: admin-tienda-jeyavila
+
+services:
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080}
+        VITE_TENANT_ID: ${VITE_TENANT_ID}
+    image: admin-tienda-jeyavila
+    container_name: admin-tienda-jeyavila
+    restart: unless-stopped
+    expose:
+      - "80"
+    networks:
+      - default
+      - coolify
+
+networks:
+  coolify:
+    external: true
