@@ -3,6 +3,7 @@ import { CreditCard, Mail, Moon, Package, Pencil, Plus, Save, Store, Sun, Phone,
 import Input from '../../../components/ui/Input'
 import { getTheme, setTheme as saveTheme } from '../../../services/themeService'
 import { tiendaConfigService } from '../../../services/tiendaConfigService'
+import { wompiCredencialesService } from '../../../services/wompiCredencialesService'
 import { direccionDevolucionService } from '../../../services/direccionDevolucionService'
 import { empaqueService } from '../../../services/empaqueService'
 import { sucursalService } from '../../../services/sucursalService'
@@ -348,6 +349,111 @@ function EmpaqueForm({ form, set, error, saving, onGuardar, onCancelar }) {
         </button>
         <button type="button" onClick={onCancelar} className="text-xs text-gray-400 hover:text-black">Cancelar</button>
       </div>
+    </div>
+  )
+}
+
+const CAMPOS_WOMPI = [
+  { key: 'publicKey', campo: 'PUBLIC_KEY', label: 'Llave pública' },
+  { key: 'privateKey', campo: 'PRIVATE_KEY', label: 'Llave privada' },
+  { key: 'integrityKey', campo: 'INTEGRITY_KEY', label: 'Llave de integridad' },
+  { key: 'eventsKey', campo: 'EVENTS_KEY', label: 'Llave de eventos' },
+]
+const WOMPI_VACIO = { publicKey: '', privateKey: '', integrityKey: '', eventsKey: '' }
+
+function formatFechaCorta(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+/** Credenciales de Wompi de ESTA tienda (decisión explícita del usuario, 2026-10-15): a
+ *  diferencia de las demás integraciones, Wompi la carga el propio admin porque la cuenta es
+ *  suya, no de la plataforma — el superadmin también puede seguir editándola desde su panel. Los
+ *  campos siempre arrancan vacíos (el backend nunca devuelve el valor real) — dejar uno en
+ *  blanco al guardar conserva lo que ya había. */
+function WompiSection({ isAdmin }) {
+  const [estado, setEstado] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [form, setForm] = useState(WOMPI_VACIO)
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  const load = () => {
+    setLoading(true)
+    wompiCredencialesService.estado()
+      .then((data) => setEstado(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(load, [])
+
+  const estadoDe = (campo) => estado.find((e) => e.campo === campo)
+  const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+
+  const guardar = async () => {
+    setSaving(true)
+    setError('')
+    try {
+      await wompiCredencialesService.actualizar(form)
+      setForm(WOMPI_VACIO)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+      load()
+    } catch (err) {
+      setError(err.message || 'No se pudo guardar')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="section-card p-6 space-y-4">
+      <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+        <CreditCard size={16} className="text-gray-500" />
+        <h2 className="text-sm font-bold text-black">Credenciales de Wompi</h2>
+      </div>
+      <p className="text-xs text-gray-400 -mt-2">
+        Las llaves de tu propia cuenta de Wompi (dashboard.wompi.co → Configuración → Llaves de
+        API / Llave de eventos). Deja en blanco cualquier campo que no quieras cambiar — se
+        conserva el valor que ya tenías guardado.
+        {!isAdmin && ' Solo el administrador puede verlas y editarlas.'}
+      </p>
+
+      {!isAdmin ? null : loading ? (
+        <p className="text-xs text-gray-400">Cargando...</p>
+      ) : (
+        <div className="space-y-3">
+          {CAMPOS_WOMPI.map(({ key, campo, label }) => {
+            const info = estadoDe(campo)
+            return (
+              <div key={key}>
+                <Input
+                  label={label}
+                  type="password"
+                  value={form[key]}
+                  onChange={set(key)}
+                  placeholder={info?.configurada ? 'Ya configurada — escribe para cambiarla' : 'Sin configurar'}
+                />
+                {info?.configurada && (
+                  <p className="text-xs text-gray-400 mt-1">
+                    Configurada{info.actualizado_por_email ? ` por ${info.actualizado_por_email}` : ''}
+                    {info.actualizado_en ? ` el ${formatFechaCorta(info.actualizado_en)}` : ''}
+                    {info.origen === 'ENV' ? ' (variable de entorno del servidor)' : ''}
+                  </p>
+                )}
+              </div>
+            )
+          })}
+          {error && <p className="text-xs text-red-500">{error}</p>}
+          <div className="flex items-center gap-2 pt-1">
+            <button type="button" onClick={guardar} disabled={saving} className={`btn-primary text-xs ${saved ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}>
+              {saving ? 'Guardando...' : saved ? '¡Guardado!' : 'Guardar credenciales de Wompi'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -798,6 +904,8 @@ export default function SettingsPage() {
             tiene ninguna restricción por envio_modo, siempre fue seguro crearlos en cualquier
             momento — lo único que hacía falta era dejar de esconder esta sección). */}
         <EmpaquesSection isAdmin={isAdmin} />
+
+        <WompiSection isAdmin={isAdmin} />
 
         {/* Sucursales/transportadoras sí son específicas de envío real: piden datos (ej.
             dirección de origen) que no aplican con 'contra_entrega'/'fijo'. */}
