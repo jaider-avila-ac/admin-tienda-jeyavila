@@ -375,10 +375,10 @@ function WompiSection({ isAdmin }) {
   const [estado, setEstado] = useState([])
   const [webhookUrl, setWebhookUrl] = useState('')
   const [loading, setLoading] = useState(true)
-  const [form, setForm] = useState(WOMPI_VACIO)
-  const [error, setError] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [valores, setValores] = useState(WOMPI_VACIO)
+  const [savingKey, setSavingKey] = useState(null)
+  const [savedKey, setSavedKey] = useState(null)
+  const [errores, setErrores] = useState({})
   const [copiado, setCopiado] = useState(false)
 
   const load = () => {
@@ -395,7 +395,7 @@ function WompiSection({ isAdmin }) {
   useEffect(load, [])
 
   const estadoDe = (campo) => estado.find((e) => e.campo === campo)
-  const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+  const setValor = (key) => (e) => setValores((v) => ({ ...v, [key]: e.target.value }))
 
   const copiarWebhook = () => {
     navigator.clipboard?.writeText(webhookUrl).then(() => {
@@ -404,19 +404,23 @@ function WompiSection({ isAdmin }) {
     })
   }
 
-  const guardar = async () => {
-    setSaving(true)
-    setError('')
+  // Cada llave se guarda en su propia petición — nunca junto a las otras 3 en el mismo cuerpo
+  // HTTP (decisión explícita del usuario, 2026-10-15: que jamás viajen juntas por internet). El
+  // backend ya ignora cualquier campo vacío/ausente, así que mandar solo una no borra las demás.
+  const guardarCampo = async (key) => {
+    if (!valores[key]) return
+    setSavingKey(key)
+    setErrores((e) => ({ ...e, [key]: '' }))
     try {
-      await wompiCredencialesService.actualizar(form)
-      setForm(WOMPI_VACIO)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2500)
+      await wompiCredencialesService.actualizar({ [key]: valores[key] })
+      setValores((v) => ({ ...v, [key]: '' }))
+      setSavedKey(key)
+      setTimeout(() => setSavedKey(null), 2000)
       load()
     } catch (err) {
-      setError(err.message || 'No se pudo guardar')
+      setErrores((e) => ({ ...e, [key]: err.message || 'No se pudo guardar' }))
     } finally {
-      setSaving(false)
+      setSavingKey(null)
     }
   }
 
@@ -433,15 +437,14 @@ function WompiSection({ isAdmin }) {
       </p>
       <p className="text-xs text-gray-400 -mt-2">
         Por seguridad, una vez guardada ninguna llave se puede volver a consultar — ni el
-        superadministrador de la plataforma ni tú mismo podrán verla de nuevo. Solo es posible
-        reemplazarla: puedes actualizar las 4 a la vez, o dejar en blanco las que no quieras
-        tocar y se actualiza únicamente la que escribas.
+        superadministrador de la plataforma ni tú mismo podrán verla de nuevo. Cada llave tiene
+        su propio botón de guardar: nunca viajan varias juntas en la misma petición.
       </p>
 
       {!isAdmin ? null : loading ? (
         <p className="text-xs text-gray-400">Cargando...</p>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {webhookUrl && (
             <div>
               <p className="text-[11px] text-gray-400 mb-1">URL de webhook — regístrala en tu panel de Wompi para que confirme los pagos automáticamente</p>
@@ -457,13 +460,25 @@ function WompiSection({ isAdmin }) {
             const info = estadoDe(campo)
             return (
               <div key={key}>
-                <Input
-                  label={label}
-                  type="password"
-                  value={form[key]}
-                  onChange={set(key)}
-                  placeholder={info?.configurada ? 'Ya configurada — escribe para cambiarla' : 'Sin configurar'}
-                />
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <Input
+                      label={label}
+                      type="password"
+                      value={valores[key]}
+                      onChange={setValor(key)}
+                      placeholder={info?.configurada ? 'Ya configurada — escribe para cambiarla' : 'Sin configurar'}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => guardarCampo(key)}
+                    disabled={!valores[key] || savingKey === key}
+                    className={`btn-secondary text-xs flex-shrink-0 ${savedKey === key ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}
+                  >
+                    {savingKey === key ? 'Guardando...' : savedKey === key ? 'Guardada' : 'Guardar'}
+                  </button>
+                </div>
                 {info?.configurada && (
                   <p className="text-xs text-gray-400 mt-1">
                     Configurada{info.actualizado_por_email ? ` por ${info.actualizado_por_email}` : ''}
@@ -471,15 +486,10 @@ function WompiSection({ isAdmin }) {
                     {info.origen === 'ENV' ? ' (variable de entorno del servidor)' : ''}
                   </p>
                 )}
+                {errores[key] && <p className="text-xs text-red-500 mt-1">{errores[key]}</p>}
               </div>
             )
           })}
-          {error && <p className="text-xs text-red-500">{error}</p>}
-          <div className="flex items-center gap-2 pt-1">
-            <button type="button" onClick={guardar} disabled={saving} className={`btn-primary text-xs ${saved ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}>
-              {saving ? 'Guardando...' : saved ? '¡Guardado!' : 'Guardar credenciales de Wompi'}
-            </button>
-          </div>
         </div>
       )}
     </div>
