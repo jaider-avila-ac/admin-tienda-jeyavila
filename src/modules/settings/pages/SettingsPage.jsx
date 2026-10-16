@@ -779,7 +779,18 @@ const INITIAL = {
   whatsapp: '3025680189',
 }
 
+// Categorías de Configuración — antes todo esto era un solo scroll largo; el botón de guardar
+// queda fuera de las pestañas (ver abajo) porque un mismo <form> cubre campos repartidos en
+// varias de ellas (dominioStaff en "Tienda", envío en "Pagos", el correo en "Notificaciones").
+const TABS = [
+  { key: 'tienda', label: 'Tienda', icon: Store },
+  { key: 'pagos', label: 'Pagos y envío', icon: CreditCard },
+  { key: 'logistica', label: 'Logística', icon: Truck },
+  { key: 'notificaciones', label: 'Notificaciones', icon: Mail },
+]
+
 export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState('tienda')
   const [form, setForm] = useState(INITIAL)
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -852,264 +863,298 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-5">
+      {/* Categorías — solo filtran qué se muestra, todo sigue siendo un único <form> (ver abajo) */}
+      <div className="flex items-center gap-1 border-b border-gray-200 overflow-x-auto no-scrollbar">
+        {TABS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setActiveTab(key)}
+            className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold whitespace-nowrap border-b-2 -mb-px transition-colors ${
+              activeTab === key ? 'border-admin-accent text-black' : 'border-transparent text-gray-400 hover:text-black'
+            }`}
+          >
+            <Icon size={14} /> {label}
+          </button>
+        ))}
+      </div>
+
       <form onSubmit={handleSave} className="space-y-5">
-        {/* Apariencia */}
-        <div className="section-card p-6 space-y-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              {isDark ? <Moon size={16} className="text-gray-500" /> : <Sun size={16} className="text-gray-500" />}
-              <div>
-                <h2 className="text-sm font-bold text-black">Apariencia</h2>
-                <p className="text-xs text-gray-400 mt-0.5">Activa o desactiva el modo oscuro del panel admin.</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className={`relative h-7 w-14 transition-colors flex-shrink-0 ${isDark ? 'bg-admin-accent' : 'bg-gray-200'}`}
-              aria-pressed={isDark}
-              aria-label="Cambiar modo oscuro"
-            >
-              <span className={`absolute top-1 h-5 w-5 bg-white shadow-sm transition-transform ${isDark ? 'translate-x-8' : 'translate-x-1'}`} />
-            </button>
-          </div>
-        </div>
-
-        {/* Info de la tienda */}
-        <div className="section-card p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-            <Store size={16} className="text-gray-500" />
-            <h2 className="text-sm font-bold text-black">Información de la tienda</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Nombre de la tienda" value={form.nombre} onChange={set('nombre')} />
-            <Input label="NIT / RUT" value={form.nit} onChange={set('nit')} />
-          </div>
-          <div className="pt-2 border-t border-gray-100">
-            <Input
-              label="Dominio para colaboradores"
-              value={dominioStaff}
-              onChange={(e) => setDominioStaff(e.target.value)}
-              placeholder="tuempresa.com"
-            />
-            <p className="text-xs text-gray-400 mt-1">
-              Los colaboradores que crees en "Colaboradores" recibirán un usuario con este dominio (ej. juan.perez@{dominioStaff || 'tuempresa.com'}).
-            </p>
-          </div>
-        </div>
-
-        {/* Contacto */}
-        <div className="section-card p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-            <Phone size={16} className="text-gray-500" />
-            <h2 className="text-sm font-bold text-black">Contacto</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Email de ventas" type="email" value={form.email} onChange={set('email')} />
-            <Input label="Teléfono" value={form.telefono} onChange={set('telefono')} />
-            <Input label="WhatsApp (solo números)" value={form.whatsapp} onChange={set('whatsapp')} />
-            <Input label="Sitio web" value={form.sitioWeb} onChange={set('sitioWeb')} />
-          </div>
-        </div>
-
-        {/* Ubicación */}
-        <div className="section-card p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-            <MapPin size={16} className="text-gray-500" />
-            <h2 className="text-sm font-bold text-black">Ubicación</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Ciudad" value={form.ciudad} onChange={set('ciudad')} />
-            <Input label="Dirección" value={form.direccion} onChange={set('direccion')} />
-          </div>
-        </div>
-
-        <DireccionesDevolucionSection />
-
-        {/* Los empaques se pueden ir creando desde antes de activar el envío real (Envia.com) —
-            así, cuando el admin por fin activa 'envia', ya tiene su catálogo de empaques listo en
-            vez de tener que crearlos a última hora (ver EmpaqueService.create en el backend: no
-            tiene ninguna restricción por envio_modo, siempre fue seguro crearlos en cualquier
-            momento — lo único que hacía falta era dejar de esconder esta sección). */}
-        <EmpaquesSection isAdmin={isAdmin} />
-
-        <WompiSection isAdmin={isAdmin} />
-
-        {/* Sucursales/transportadoras sí son específicas de envío real: piden datos (ej.
-            dirección de origen) que no aplican con 'contra_entrega'/'fijo'. */}
-        {envioModo === 'envia' && (
+        {activeTab === 'tienda' && (
           <>
-            <SucursalesSection isAdmin={isAdmin} />
-
-            <TransportadorasSection isAdmin={isAdmin} />
-          </>
-        )}
-
-        {/* Envíos y pagos */}
-        <div className="section-card p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-            <CreditCard size={16} className="text-gray-500" />
-            <h2 className="text-sm font-bold text-black">Envíos y pagos</h2>
-          </div>
-          <div>
-            <label className="label-field">Moneda</label>
-            <select value={form.moneda} onChange={set('moneda')} className="input-field bg-white sm:max-w-[50%]">
-              <option value="COP">COP - Peso Colombiano</option>
-              <option value="USD">USD - Dólar</option>
-            </select>
-          </div>
-
-          <div className="pt-2 border-t border-gray-100 space-y-3">
-            <div>
-              <p className="text-xs font-bold text-black">¿Cómo se cobra el envío?</p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                El costo real de envío puede variar bastante y no hay nada que lo calcule automático —
-                por eso, por defecto, es el cliente quien le paga al transportador al recibir (contra
-                entrega) y no se cobra nada de envío en el checkout online. Actívalo aquí si prefieres
-                que la tienda sí cobre un costo fijo.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setEnvioModo('contra_entrega')}
-                disabled={!envioConfigLoaded}
-                className={`text-left p-3 border text-xs disabled:opacity-50 ${
-                  envioModo === 'contra_entrega' ? 'border-admin-accent bg-admin-accent/5' : 'border-gray-200'
-                }`}
-              >
-                <p className="font-bold text-black">Contra entrega (recomendado)</p>
-                <p className="text-gray-500 mt-0.5">El cliente paga el envío directo al recibir. No se cobra online.</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setEnvioModo('fijo')}
-                disabled={!envioConfigLoaded}
-                className={`text-left p-3 border text-xs disabled:opacity-50 ${
-                  envioModo === 'fijo' ? 'border-admin-accent bg-admin-accent/5' : 'border-gray-200'
-                }`}
-              >
-                <p className="font-bold text-black">Costo fijo</p>
-                <p className="text-gray-500 mt-0.5">La tienda cobra un costo de envío controlado por ti.</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setEnvioModo('envia')}
-                disabled={!envioConfigLoaded}
-                className={`text-left p-3 border text-xs disabled:opacity-50 ${
-                  envioModo === 'envia' ? 'border-admin-accent bg-admin-accent/5' : 'border-gray-200'
-                }`}
-              >
-                <p className="font-bold text-black">Envío real (Envia.com)</p>
-                <p className="text-gray-500 mt-0.5">Se cotiza y cobra el costo real de la transportadora en el checkout.</p>
-              </button>
-            </div>
-            {envioModo === 'envia' && (
-              <div className="space-y-2">
-                <p className="text-xs text-gray-400">
-                  Requiere: todos los productos activos con un empaque asignado, al menos una
-                  sucursal con dirección de origen, y las credenciales de Envia.com configuradas
-                  (contacta al superadmin). Si algo falta, al guardar verás el error específico.
-                </p>
-                <div>
-                  <label className="label-field">Ambiente de Envia.com</label>
-                  <div className="flex gap-4 pt-1">
-                    <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
-                      <input type="radio" name="envia_ambiente" value="sandbox"
-                        checked={enviaAmbiente === 'sandbox'}
-                        onChange={() => setEnviaAmbiente('sandbox')} className="accent-black" />
-                      Sandbox (pruebas, no cobra dinero real)
-                    </label>
-                    <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
-                      <input type="radio" name="envia_ambiente" value="produccion"
-                        checked={enviaAmbiente === 'produccion'}
-                        onChange={() => setEnviaAmbiente('produccion')} className="accent-black" />
-                      Producción (guías reales, cobra dinero real)
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="pt-2 border-t border-gray-100 space-y-4">
-            <div className={envioModo !== 'fijo' ? 'opacity-50' : ''}>
-              <Input
-                label="Costo de envío base (COP)"
-                type="number"
-                value={envioCosto}
-                onChange={(e) => setEnvioCosto(e.target.value)}
-                disabled={!envioConfigLoaded || envioModo !== 'fijo'}
-                placeholder={envioConfigLoaded ? '' : 'Cargando...'}
-              />
-            </div>
-            <div className={`space-y-3 ${envioGratisEditable ? '' : 'opacity-50'}`}>
+            {/* Apariencia */}
+            <div className="section-card p-6 space-y-4">
               <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold text-black">Envío gratis por monto mínimo</p>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {envioModo === 'contra_entrega'
-                      ? 'Si la compra llega a este monto, la tienda asume el envío y el cliente no paga nada al recibir. Por debajo, paga el envío al transportador. También muestra la barra "te faltan $X para envío gratis".'
-                      : 'Muestra la barra de progreso "te faltan $X para envío gratis" en la tienda.'}
-                  </p>
+                <div className="flex items-center gap-2">
+                  {isDark ? <Moon size={16} className="text-gray-500" /> : <Sun size={16} className="text-gray-500" />}
+                  <div>
+                    <h2 className="text-sm font-bold text-black">Apariencia</h2>
+                    <p className="text-xs text-gray-400 mt-0.5">Activa o desactiva el modo oscuro del panel admin.</p>
+                  </div>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setEnvioGratisActivo((v) => !v)}
-                  disabled={!envioConfigLoaded || !envioGratisEditable}
-                  className={`relative h-7 w-14 transition-colors flex-shrink-0 disabled:opacity-50 ${envioGratisActivo ? 'bg-admin-accent' : 'bg-gray-200'}`}
-                  aria-pressed={envioGratisActivo}
-                  aria-label="Activar envío gratis por monto mínimo"
+                  onClick={toggleTheme}
+                  className={`relative h-7 w-14 transition-colors flex-shrink-0 ${isDark ? 'bg-admin-accent' : 'bg-gray-200'}`}
+                  aria-pressed={isDark}
+                  aria-label="Cambiar modo oscuro"
                 >
-                  <span className={`absolute top-1 h-5 w-5 bg-white shadow-sm transition-transform ${envioGratisActivo ? 'translate-x-8' : 'translate-x-1'}`} />
+                  <span className={`absolute top-1 h-5 w-5 bg-white shadow-sm transition-transform ${isDark ? 'translate-x-8' : 'translate-x-1'}`} />
                 </button>
               </div>
+            </div>
+
+            {/* Info de la tienda */}
+            <div className="section-card p-6 space-y-4">
+              <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                <Store size={16} className="text-gray-500" />
+                <h2 className="text-sm font-bold text-black">Información de la tienda</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input label="Nombre de la tienda" value={form.nombre} onChange={set('nombre')} />
+                <Input label="NIT / RUT" value={form.nit} onChange={set('nit')} />
+              </div>
+              <div className="pt-2 border-t border-gray-100">
+                <Input
+                  label="Dominio para colaboradores"
+                  value={dominioStaff}
+                  onChange={(e) => setDominioStaff(e.target.value)}
+                  placeholder="tuempresa.com"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Los colaboradores que crees en "Colaboradores" recibirán un usuario con este dominio (ej. juan.perez@{dominioStaff || 'tuempresa.com'}).
+                </p>
+              </div>
+            </div>
+
+            {/* Contacto */}
+            <div className="section-card p-6 space-y-4">
+              <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                <Phone size={16} className="text-gray-500" />
+                <h2 className="text-sm font-bold text-black">Contacto</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input label="Email de ventas" type="email" value={form.email} onChange={set('email')} />
+                <Input label="Teléfono" value={form.telefono} onChange={set('telefono')} />
+                <Input label="WhatsApp (solo números)" value={form.whatsapp} onChange={set('whatsapp')} />
+                <Input label="Sitio web" value={form.sitioWeb} onChange={set('sitioWeb')} />
+              </div>
+            </div>
+
+            {/* Ubicación */}
+            <div className="section-card p-6 space-y-4">
+              <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                <MapPin size={16} className="text-gray-500" />
+                <h2 className="text-sm font-bold text-black">Ubicación</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input label="Ciudad" value={form.ciudad} onChange={set('ciudad')} />
+                <Input label="Dirección" value={form.direccion} onChange={set('direccion')} />
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab === 'pagos' && (
+          <>
+            {/* Envíos y pagos */}
+            <div className="section-card p-6 space-y-4">
+              <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                <CreditCard size={16} className="text-gray-500" />
+                <h2 className="text-sm font-bold text-black">Envíos y pagos</h2>
+              </div>
+              <div>
+                <label className="label-field">Moneda</label>
+                <select value={form.moneda} onChange={set('moneda')} className="input-field bg-white sm:max-w-[50%]">
+                  <option value="COP">COP - Peso Colombiano</option>
+                  <option value="USD">USD - Dólar</option>
+                </select>
+              </div>
+
+              <div className="pt-2 border-t border-gray-100 space-y-3">
+                <div>
+                  <p className="text-xs font-bold text-black">¿Cómo se cobra el envío?</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    El costo real de envío puede variar bastante y no hay nada que lo calcule automático —
+                    por eso, por defecto, es el cliente quien le paga al transportador al recibir (contra
+                    entrega) y no se cobra nada de envío en el checkout online. Actívalo aquí si prefieres
+                    que la tienda sí cobre un costo fijo.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEnvioModo('contra_entrega')}
+                    disabled={!envioConfigLoaded}
+                    className={`text-left p-3 border text-xs disabled:opacity-50 ${
+                      envioModo === 'contra_entrega' ? 'border-admin-accent bg-admin-accent/5' : 'border-gray-200'
+                    }`}
+                  >
+                    <p className="font-bold text-black">Contra entrega (recomendado)</p>
+                    <p className="text-gray-500 mt-0.5">El cliente paga el envío directo al recibir. No se cobra online.</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEnvioModo('fijo')}
+                    disabled={!envioConfigLoaded}
+                    className={`text-left p-3 border text-xs disabled:opacity-50 ${
+                      envioModo === 'fijo' ? 'border-admin-accent bg-admin-accent/5' : 'border-gray-200'
+                    }`}
+                  >
+                    <p className="font-bold text-black">Costo fijo</p>
+                    <p className="text-gray-500 mt-0.5">La tienda cobra un costo de envío controlado por ti.</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEnvioModo('envia')}
+                    disabled={!envioConfigLoaded}
+                    className={`text-left p-3 border text-xs disabled:opacity-50 ${
+                      envioModo === 'envia' ? 'border-admin-accent bg-admin-accent/5' : 'border-gray-200'
+                    }`}
+                  >
+                    <p className="font-bold text-black">Envío real (Envia.com)</p>
+                    <p className="text-gray-500 mt-0.5">Se cotiza y cobra el costo real de la transportadora en el checkout.</p>
+                  </button>
+                </div>
+                {envioModo === 'envia' && (
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-400">
+                      Requiere: todos los productos activos con un empaque asignado, al menos una
+                      sucursal con dirección de origen, y las credenciales de Envia.com configuradas
+                      (contacta al superadmin). Si algo falta, al guardar verás el error específico.
+                    </p>
+                    <div>
+                      <label className="label-field">Ambiente de Envia.com</label>
+                      <div className="flex gap-4 pt-1">
+                        <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+                          <input type="radio" name="envia_ambiente" value="sandbox"
+                            checked={enviaAmbiente === 'sandbox'}
+                            onChange={() => setEnviaAmbiente('sandbox')} className="accent-black" />
+                          Sandbox (pruebas, no cobra dinero real)
+                        </label>
+                        <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+                          <input type="radio" name="envia_ambiente" value="produccion"
+                            checked={enviaAmbiente === 'produccion'}
+                            onChange={() => setEnviaAmbiente('produccion')} className="accent-black" />
+                          Producción (guías reales, cobra dinero real)
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-2 border-t border-gray-100 space-y-4">
+                <div className={envioModo !== 'fijo' ? 'opacity-50' : ''}>
+                  <Input
+                    label="Costo de envío base (COP)"
+                    type="number"
+                    value={envioCosto}
+                    onChange={(e) => setEnvioCosto(e.target.value)}
+                    disabled={!envioConfigLoaded || envioModo !== 'fijo'}
+                    placeholder={envioConfigLoaded ? '' : 'Cargando...'}
+                  />
+                </div>
+                <div className={`space-y-3 ${envioGratisEditable ? '' : 'opacity-50'}`}>
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-bold text-black">Envío gratis por monto mínimo</p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {envioModo === 'contra_entrega'
+                          ? 'Si la compra llega a este monto, la tienda asume el envío y el cliente no paga nada al recibir. Por debajo, paga el envío al transportador. También muestra la barra "te faltan $X para envío gratis".'
+                          : 'Muestra la barra de progreso "te faltan $X para envío gratis" en la tienda.'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEnvioGratisActivo((v) => !v)}
+                      disabled={!envioConfigLoaded || !envioGratisEditable}
+                      className={`relative h-7 w-14 transition-colors flex-shrink-0 disabled:opacity-50 ${envioGratisActivo ? 'bg-admin-accent' : 'bg-gray-200'}`}
+                      aria-pressed={envioGratisActivo}
+                      aria-label="Activar envío gratis por monto mínimo"
+                    >
+                      <span className={`absolute top-1 h-5 w-5 bg-white shadow-sm transition-transform ${envioGratisActivo ? 'translate-x-8' : 'translate-x-1'}`} />
+                    </button>
+                  </div>
+                  <Input
+                    label="Compra mín. para envío gratis (COP)"
+                    type="number"
+                    value={envioGratisDesde}
+                    onChange={(e) => setEnvioGratisDesde(e.target.value)}
+                    placeholder={envioConfigLoaded ? '' : 'Cargando...'}
+                    disabled={!envioGratisActivo || !envioGratisEditable}
+                    className={!envioGratisActivo ? 'opacity-50' : ''}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <WompiSection isAdmin={isAdmin} />
+          </>
+        )}
+
+        {activeTab === 'logistica' && (
+          <>
+            <DireccionesDevolucionSection />
+
+            {/* Los empaques se pueden ir creando desde antes de activar el envío real (Envia.com) —
+                así, cuando el admin por fin activa 'envia', ya tiene su catálogo de empaques listo en
+                vez de tener que crearlos a última hora (ver EmpaqueService.create en el backend: no
+                tiene ninguna restricción por envio_modo, siempre fue seguro crearlos en cualquier
+                momento — lo único que hacía falta era dejar de esconder esta sección). */}
+            <EmpaquesSection isAdmin={isAdmin} />
+
+            {/* Sucursales/transportadoras sí son específicas de envío real: piden datos (ej.
+                dirección de origen) que no aplican con 'contra_entrega'/'fijo'. */}
+            {envioModo === 'envia' && (
+              <>
+                <SucursalesSection isAdmin={isAdmin} />
+
+                <TransportadorasSection isAdmin={isAdmin} />
+              </>
+            )}
+          </>
+        )}
+
+        {activeTab === 'notificaciones' && (
+          <div className="section-card p-6 space-y-4">
+            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+              <Mail size={16} className="text-gray-500" />
+              <h2 className="text-sm font-bold text-black">Notificaciones por correo</h2>
+            </div>
+            <div>
               <Input
-                label="Compra mín. para envío gratis (COP)"
-                type="number"
-                value={envioGratisDesde}
-                onChange={(e) => setEnvioGratisDesde(e.target.value)}
-                placeholder={envioConfigLoaded ? '' : 'Cargando...'}
-                disabled={!envioGratisActivo || !envioGratisEditable}
-                className={!envioGratisActivo ? 'opacity-50' : ''}
+                label="Correo para avisos de nuevos pedidos"
+                type="email"
+                value={emailNotificacionPedidos}
+                onChange={(e) => setEmailNotificacionPedidos(e.target.value)}
+                disabled={!envioConfigLoaded}
+                placeholder={envioConfigLoaded ? 'ej. ventas@tuempresa.com' : 'Cargando...'}
               />
+              <p className="text-xs text-gray-400 mt-1">
+                Cada vez que un cliente pague un pedido, llega un correo a esta dirección además de la
+                notificación dentro del panel. Déjalo vacío para no recibir correos.
+              </p>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Notificaciones por correo */}
-        <div className="section-card p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-            <Mail size={16} className="text-gray-500" />
-            <h2 className="text-sm font-bold text-black">Notificaciones por correo</h2>
+        {/* Save — fuera de cada bloque de pestaña porque el mismo <form> guarda dominioStaff
+            ("Tienda"), el modo de envío ("Pagos y envío") y el correo de avisos
+            ("Notificaciones") a la vez. "Logística" no tiene nada atado a este botón — cada
+            sección ahí (direcciones, empaques, sucursales, transportadoras) ya guarda la suya. */}
+        {activeTab !== 'logistica' && (
+          <div className="flex items-center justify-end gap-3">
+            {!isAdmin && (
+              <p className="text-xs text-gray-400">Solo el administrador puede guardar esta configuración.</p>
+            )}
+            {error && <p className="text-xs text-red-500">{error}</p>}
+            <button type="submit" disabled={saving || !isAdmin} className={`btn-primary ${saved ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}>
+              <Save size={15} />
+              {saving ? 'Guardando…' : saved ? '¡Guardado!' : 'Guardar cambios'}
+            </button>
           </div>
-          <div>
-            <Input
-              label="Correo para avisos de nuevos pedidos"
-              type="email"
-              value={emailNotificacionPedidos}
-              onChange={(e) => setEmailNotificacionPedidos(e.target.value)}
-              disabled={!envioConfigLoaded}
-              placeholder={envioConfigLoaded ? 'ej. ventas@tuempresa.com' : 'Cargando...'}
-            />
-            <p className="text-xs text-gray-400 mt-1">
-              Cada vez que un cliente pague un pedido, llega un correo a esta dirección además de la
-              notificación dentro del panel. Déjalo vacío para no recibir correos.
-            </p>
-          </div>
-        </div>
-
-        {/* Save */}
-        <div className="flex items-center justify-end gap-3">
-          {!isAdmin && (
-            <p className="text-xs text-gray-400">Solo el administrador puede guardar esta configuración.</p>
-          )}
-          {error && <p className="text-xs text-red-500">{error}</p>}
-          <button type="submit" disabled={saving || !isAdmin} className={`btn-primary ${saved ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}>
-            <Save size={15} />
-            {saving ? 'Guardando…' : saved ? '¡Guardado!' : 'Guardar cambios'}
-          </button>
-        </div>
+        )}
       </form>
     </div>
   )
