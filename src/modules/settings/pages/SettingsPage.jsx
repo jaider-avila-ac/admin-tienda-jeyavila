@@ -361,11 +361,6 @@ const CAMPOS_WOMPI = [
 ]
 const WOMPI_VACIO = { publicKey: '', privateKey: '', integrityKey: '', eventsKey: '' }
 
-function formatFechaCorta(iso) {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })
-}
-
 /** Credenciales de Wompi de ESTA tienda (decisión explícita del usuario, 2026-10-15): a
  *  diferencia de las demás integraciones, Wompi la carga el propio admin porque la cuenta es
  *  suya, no de la plataforma — el superadmin también puede seguir editándola desde su panel. Los
@@ -482,7 +477,6 @@ function WompiSection({ isAdmin }) {
                 {info?.configurada && (
                   <p className="text-xs text-gray-400 mt-1">
                     Configurada{info.actualizado_por_email ? ` por ${info.actualizado_por_email}` : ''}
-                    {info.actualizado_en ? ` el ${formatFechaCorta(info.actualizado_en)}` : ''}
                     {info.origen === 'ENV' ? ' (variable de entorno del servidor)' : ''}
                   </p>
                 )}
