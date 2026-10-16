@@ -871,6 +871,24 @@ export default function SettingsPage() {
     }
   }
 
+  // Un solo <form> guarda dominioStaff ("Tienda"), el modo de envío ("Pagos y envío") y el
+  // correo de avisos ("Notificaciones") a la vez, pero el botón se repite al final de CADA una
+  // de esas pestañas (en "Pagos y envío", antes de Wompi, no después) para que quede junto a
+  // los campos que de verdad guarda — no después de una sección con sus propios botones.
+  // "Logística" no usa esto: cada sección ahí ya guarda la suya.
+  const saveBar = (
+    <div className="flex items-center justify-end gap-3">
+      {!isAdmin && (
+        <p className="text-xs text-gray-400">Solo el administrador puede guardar esta configuración.</p>
+      )}
+      {error && <p className="text-xs text-red-500">{error}</p>}
+      <button type="submit" disabled={saving || !isAdmin} className={`btn-primary ${saved ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}>
+        <Save size={15} />
+        {saving ? 'Guardando…' : saved ? '¡Guardado!' : 'Guardar cambios'}
+      </button>
+    </div>
+  )
+
   return (
     <div className="max-w-3xl mx-auto space-y-5">
       {/* Categorías — solo filtran qué se muestra, todo sigue siendo un único <form> (ver abajo) */}
@@ -962,6 +980,8 @@ export default function SettingsPage() {
                 <Input label="Dirección" value={form.direccion} onChange={set('direccion')} />
               </div>
             </div>
+
+            {saveBar}
           </>
         )}
 
@@ -1099,6 +1119,8 @@ export default function SettingsPage() {
               </div>
             </div>
 
+            {saveBar}
+
             <WompiSection isAdmin={isAdmin} />
           </>
         )}
@@ -1127,43 +1149,30 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'notificaciones' && (
-          <div className="section-card p-6 space-y-4">
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-              <Mail size={16} className="text-gray-500" />
-              <h2 className="text-sm font-bold text-black">Notificaciones por correo</h2>
+          <>
+            <div className="section-card p-6 space-y-4">
+              <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                <Mail size={16} className="text-gray-500" />
+                <h2 className="text-sm font-bold text-black">Notificaciones por correo</h2>
+              </div>
+              <div>
+                <Input
+                  label="Correo para avisos de nuevos pedidos"
+                  type="email"
+                  value={emailNotificacionPedidos}
+                  onChange={(e) => setEmailNotificacionPedidos(e.target.value)}
+                  disabled={!envioConfigLoaded}
+                  placeholder={envioConfigLoaded ? 'ej. ventas@tuempresa.com' : 'Cargando...'}
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Cada vez que un cliente pague un pedido, llega un correo a esta dirección además de la
+                  notificación dentro del panel. Déjalo vacío para no recibir correos.
+                </p>
+              </div>
             </div>
-            <div>
-              <Input
-                label="Correo para avisos de nuevos pedidos"
-                type="email"
-                value={emailNotificacionPedidos}
-                onChange={(e) => setEmailNotificacionPedidos(e.target.value)}
-                disabled={!envioConfigLoaded}
-                placeholder={envioConfigLoaded ? 'ej. ventas@tuempresa.com' : 'Cargando...'}
-              />
-              <p className="text-xs text-gray-400 mt-1">
-                Cada vez que un cliente pague un pedido, llega un correo a esta dirección además de la
-                notificación dentro del panel. Déjalo vacío para no recibir correos.
-              </p>
-            </div>
-          </div>
-        )}
 
-        {/* Save — fuera de cada bloque de pestaña porque el mismo <form> guarda dominioStaff
-            ("Tienda"), el modo de envío ("Pagos y envío") y el correo de avisos
-            ("Notificaciones") a la vez. "Logística" no tiene nada atado a este botón — cada
-            sección ahí (direcciones, empaques, sucursales, transportadoras) ya guarda la suya. */}
-        {activeTab !== 'logistica' && (
-          <div className="flex items-center justify-end gap-3">
-            {!isAdmin && (
-              <p className="text-xs text-gray-400">Solo el administrador puede guardar esta configuración.</p>
-            )}
-            {error && <p className="text-xs text-red-500">{error}</p>}
-            <button type="submit" disabled={saving || !isAdmin} className={`btn-primary ${saved ? 'bg-admin-accent hover:bg-admin-accent-hover text-admin-accent-contrast' : ''}`}>
-              <Save size={15} />
-              {saving ? 'Guardando…' : saved ? '¡Guardado!' : 'Guardar cambios'}
-            </button>
-          </div>
+            {saveBar}
+          </>
         )}
       </form>
     </div>
