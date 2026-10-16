@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CreditCard, Mail, Moon, Package, Pencil, Plus, Save, Store, Sun, Phone, MapPin, Trash2, Truck, Undo2 } from 'lucide-react'
+import { Copy, CreditCard, Mail, Moon, Package, Pencil, Plus, Save, Store, Sun, Phone, MapPin, Trash2, Truck, Undo2 } from 'lucide-react'
 import Input from '../../../components/ui/Input'
 import { getTheme, setTheme as saveTheme } from '../../../services/themeService'
 import { tiendaConfigService } from '../../../services/tiendaConfigService'
@@ -373,16 +373,21 @@ function formatFechaCorta(iso) {
  *  blanco al guardar conserva lo que ya había. */
 function WompiSection({ isAdmin }) {
   const [estado, setEstado] = useState([])
+  const [webhookUrl, setWebhookUrl] = useState('')
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState(WOMPI_VACIO)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [copiado, setCopiado] = useState(false)
 
   const load = () => {
     setLoading(true)
     wompiCredencialesService.estado()
-      .then((data) => setEstado(Array.isArray(data) ? data : []))
+      .then((data) => {
+        setEstado(Array.isArray(data?.campos) ? data.campos : [])
+        setWebhookUrl(data?.webhook_url || '')
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }
@@ -391,6 +396,13 @@ function WompiSection({ isAdmin }) {
 
   const estadoDe = (campo) => estado.find((e) => e.campo === campo)
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+
+  const copiarWebhook = () => {
+    navigator.clipboard?.writeText(webhookUrl).then(() => {
+      setCopiado(true)
+      setTimeout(() => setCopiado(false), 2000)
+    })
+  }
 
   const guardar = async () => {
     setSaving(true)
@@ -430,6 +442,17 @@ function WompiSection({ isAdmin }) {
         <p className="text-xs text-gray-400">Cargando...</p>
       ) : (
         <div className="space-y-3">
+          {webhookUrl && (
+            <div>
+              <p className="text-[11px] text-gray-400 mb-1">URL de webhook — regístrala en tu panel de Wompi para que confirme los pagos automáticamente</p>
+              <div className="flex items-center gap-2">
+                <p className="flex-1 min-w-0 text-xs text-black font-mono truncate bg-gray-50 border border-gray-200 px-2 py-1.5">{webhookUrl}</p>
+                <button type="button" onClick={copiarWebhook} className="btn-secondary text-xs flex-shrink-0">
+                  <Copy size={12} /> {copiado ? 'Copiada' : 'Copiar'}
+                </button>
+              </div>
+            </div>
+          )}
           {CAMPOS_WOMPI.map(({ key, campo, label }) => {
             const info = estadoDe(campo)
             return (
