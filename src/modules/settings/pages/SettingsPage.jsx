@@ -416,9 +416,14 @@ function WompiSection({ isAdmin }) {
       </div>
       <p className="text-xs text-gray-400 -mt-2">
         Las llaves de tu propia cuenta de Wompi (dashboard.wompi.co → Configuración → Llaves de
-        API / Llave de eventos). Deja en blanco cualquier campo que no quieras cambiar — se
-        conserva el valor que ya tenías guardado.
+        API / Llave de eventos).
         {!isAdmin && ' Solo el administrador puede verlas y editarlas.'}
+      </p>
+      <p className="text-xs text-gray-400 -mt-2">
+        Por seguridad, una vez guardada ninguna llave se puede volver a consultar — ni el
+        superadministrador de la plataforma ni tú mismo podrán verla de nuevo. Solo es posible
+        reemplazarla: puedes actualizar las 4 a la vez, o dejar en blanco las que no quieras
+        tocar y se actualiza únicamente la que escribas.
       </p>
 
       {!isAdmin ? null : loading ? (
