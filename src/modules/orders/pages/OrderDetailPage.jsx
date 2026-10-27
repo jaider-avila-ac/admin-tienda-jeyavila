@@ -417,6 +417,31 @@ export default function OrderDetailPage() {
       ? 'Registra la transportadora y el número de guía antes de continuar'
       : null
 
+  // El pedido es un flujo de un solo sentido: responsable → preparando → seguimiento →
+  // enviado → entregado. Antes se podía llenar la transportadora/guía desde que el pedido
+  // apenas estaba "pagado" (sin ni siquiera estar en preparación todavía) y el botón de avance
+  // vivía arriba del todo, lejos de lo que en realidad le faltaba — dos cosas sueltas que no
+  // seguían ningún orden. Ahora el seguimiento ni siquiera se puede tocar hasta que el pedido
+  // ya esté "preparando" o más adelante.
+  const puedeVerSeguimiento = ['preparando', 'enviado', 'entregado'].includes(order.estado)
+
+  const avanceBloque = siguienteEstado && (
+    <div className="section-card p-4 flex items-center justify-between gap-3">
+      <div>
+        <button
+          onClick={handleAvanzarEstado}
+          disabled={savingEstado || Boolean(bloqueoAvance)}
+          title={bloqueoAvance ?? undefined}
+          className="btn-primary text-xs disabled:opacity-60"
+        >
+          {savingEstado ? 'Guardando…' : `Marcar como ${ESTADO_LABEL[siguienteEstado]}`}
+        </button>
+        {bloqueoAvance && <p className="text-[11px] text-amber-600 mt-1.5">{bloqueoAvance}</p>}
+        {estadoError && <p className="text-[11px] text-red-500 mt-1.5">{estadoError}</p>}
+      </div>
+    </div>
+  )
+
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       {/* Header */}
@@ -433,18 +458,6 @@ export default function OrderDetailPage() {
         </div>
         <div className="ml-auto flex flex-col items-end gap-1">
           <Badge variant={BADGE_MAP[order.estado]}>{ESTADO_LABEL[order.estado]}</Badge>
-          {siguienteEstado && (
-            <button
-              onClick={handleAvanzarEstado}
-              disabled={savingEstado || Boolean(bloqueoAvance)}
-              title={bloqueoAvance ?? undefined}
-              className="btn-primary text-xs mt-1 disabled:opacity-60"
-            >
-              {savingEstado ? 'Guardando…' : `Marcar como ${ESTADO_LABEL[siguienteEstado]}`}
-            </button>
-          )}
-          {bloqueoAvance && <span className="text-[11px] text-amber-600 text-right">{bloqueoAvance}</span>}
-          {estadoError && <span className="text-[11px] text-red-500">{estadoError}</span>}
           {puedeCancelar && (
             <button onClick={abrirCancelar} className="text-[11px] font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 mt-1">
               <Ban size={12} /> Cancelar compra y reembolsar
@@ -458,7 +471,31 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      {/* Responsable del pedido — cualquier staff puede tomarlo; admin puede reasignar/desasignar */}
+      {/* Alerta de stock insuficiente al confirmar el pago — primero, porque bloquea todo lo
+          demás (ni responsable ni preparación tienen caso mientras esto no se resuelva). */}
+      {order.alerta_stock && (
+        <div className="section-card p-4 border-l-4 border-red-500 bg-red-50 flex items-start gap-3">
+          <AlertTriangle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-bold text-red-700">Faltante de stock sin resolver</p>
+            <p className="text-xs text-red-600 mt-0.5">
+              El pago de este pedido ya fue aprobado, pero al confirmarlo no había stock suficiente
+              para uno o más productos (marcados abajo). Contacta al cliente, reabastece o gestiona
+              un reembolso parcial, y luego marca la alerta como resuelta para poder prepararlo.
+            </p>
+            <button
+              onClick={handleResolverAlerta}
+              disabled={resolving}
+              className="btn-danger text-xs mt-3"
+            >
+              {resolving ? 'Guardando…' : 'Marcar como resuelto'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Responsable del pedido — cualquier staff puede tomarlo; admin puede reasignar/desasignar.
+          Paso 1 del flujo: sin esto no tiene caso intentar marcar "preparando" (ver avanceBloque). */}
       <div className="section-card p-4 flex items-center gap-3">
         <UserCog size={16} className="text-gray-400 flex-shrink-0" />
         <span className="text-xs font-semibold text-gray-500 flex-shrink-0">Responsable:</span>
@@ -481,6 +518,9 @@ export default function OrderDetailPage() {
         )}
         {asignError && <span className="text-[11px] text-red-500">{asignError}</span>}
       </div>
+
+      {/* Paso 2: avanzar a "preparando" — justo debajo de responsable, de donde depende. */}
+      {siguienteEstado === 'preparando' && avanceBloque}
 
       {/* Cancelación por el admin — motivo, nota y estado del reembolso */}
       {order.cancel_motivo && (
@@ -549,33 +589,13 @@ export default function OrderDetailPage() {
         </div>
       )}
 
-      {/* Alerta de stock insuficiente al confirmar el pago */}
-      {order.alerta_stock && (
-        <div className="section-card p-4 border-l-4 border-red-500 bg-red-50 flex items-start gap-3">
-          <AlertTriangle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-sm font-bold text-red-700">Faltante de stock sin resolver</p>
-            <p className="text-xs text-red-600 mt-0.5">
-              El pago de este pedido ya fue aprobado, pero al confirmarlo no había stock suficiente
-              para uno o más productos (marcados abajo). Contacta al cliente, reabastece o gestiona
-              un reembolso parcial, y luego marca la alerta como resuelta para poder prepararlo.
-            </p>
-            <button
-              onClick={handleResolverAlerta}
-              disabled={resolving}
-              className="btn-danger text-xs mt-3"
-            >
-              {resolving ? 'Guardando…' : 'Marcar como resuelto'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Seguimiento del envío — real (Envia.com) si la tienda cotiza envío real, manual si no */}
-      {order.estado !== 'pendiente_pago' && envioModo === 'envia' && (
+      {/* Paso 3: seguimiento del envío — real (Envia.com) si la tienda cotiza envío real, manual
+          si no. Solo visible desde "preparando" en adelante: antes no tiene sentido llenar
+          transportadora/guía de un pedido que ni siquiera se empezó a armar. */}
+      {puedeVerSeguimiento && envioModo === 'envia' && (
         <EnvioRealSection order={order} isAdmin={isAdmin} />
       )}
-      {order.estado !== 'pendiente_pago' && envioModo !== null && envioModo !== 'envia' && (
+      {puedeVerSeguimiento && envioModo !== null && envioModo !== 'envia' && (
         <div className="section-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-black flex items-center gap-1.5">
@@ -662,6 +682,10 @@ export default function OrderDetailPage() {
           {seguimientoError && <p className="text-xs text-red-500">{seguimientoError}</p>}
         </div>
       )}
+
+      {/* Paso 4: avanzar a "enviado" (o a "entregado" una vez ya enviado) — justo debajo del
+          seguimiento, de donde depende "enviado". */}
+      {(siguienteEstado === 'enviado' || siguienteEstado === 'entregado') && avanceBloque}
 
       {/* Info del cliente */}
       <div className="section-card p-5 space-y-3">
