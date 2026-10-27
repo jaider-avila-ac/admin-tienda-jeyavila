@@ -517,8 +517,15 @@ export default function OrderDetailPage() {
           >
             {/* Desde "preparando" en adelante ya se exigió un responsable para llegar hasta
                 acá (ver avanceBloque) — quitarlo del todo contradiría eso, así que esa opción
-                ni se ofrece; el backend lo rechaza igual si de algún modo llegara a pedirse. */}
+                ni se ofrece; el backend lo rechaza igual si de algún modo llegara a pedirse.
+                Pero si de todos modos quedó sin nadie (dato de antes de este cambio), hace
+                falta ESTA opción placeholder — si no, el <select> no tiene ningún <option> que
+                calce con value="" y el navegador cae al primero de la lista, aparentando un
+                responsable que en realidad nunca se guardó (bug real, no solo cosmético). */}
             {!puedeVerSeguimiento && <option value="">Sin asignar</option>}
+            {puedeVerSeguimiento && !order.colaborador_id && (
+              <option value="" disabled>Selecciona un responsable…</option>
+            )}
             {colaboradores.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
           </select>
         ) : order.colaborador_nombre ? (
