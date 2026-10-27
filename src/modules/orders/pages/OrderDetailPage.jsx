@@ -404,6 +404,19 @@ export default function OrderDetailPage() {
 
   const dir = order.dir_snapshot ?? {}
 
+  // Mismas condiciones que ya exige el backend (PedidoService.updateEstado) para este mismo
+  // avance — mostrarlas ANTES de hacer clic, no solo como error después, para que el botón
+  // tenga sentido en vez de parecer habilitado y fallar en silencio con un texto chico.
+  const siguienteEstado = SIGUIENTE_PASO[order.estado]
+  const bloqueoAvance =
+    siguienteEstado === 'preparando' && order.alerta_stock
+      ? 'Resuelve la alerta de stock antes de continuar'
+      : (siguienteEstado === 'preparando' || siguienteEstado === 'enviado') && !order.colaborador_id
+      ? 'Asigna un responsable antes de continuar'
+      : siguienteEstado === 'enviado' && envioModo !== 'envia' && (!order.transportadora || !order.codigo_rastreo)
+      ? 'Registra la transportadora y el número de guía antes de continuar'
+      : null
+
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       {/* Header */}
@@ -420,15 +433,17 @@ export default function OrderDetailPage() {
         </div>
         <div className="ml-auto flex flex-col items-end gap-1">
           <Badge variant={BADGE_MAP[order.estado]}>{ESTADO_LABEL[order.estado]}</Badge>
-          {SIGUIENTE_PASO[order.estado] && (
+          {siguienteEstado && (
             <button
               onClick={handleAvanzarEstado}
-              disabled={savingEstado}
+              disabled={savingEstado || Boolean(bloqueoAvance)}
+              title={bloqueoAvance ?? undefined}
               className="btn-primary text-xs mt-1 disabled:opacity-60"
             >
-              {savingEstado ? 'Guardando…' : `Marcar como ${ESTADO_LABEL[SIGUIENTE_PASO[order.estado]]}`}
+              {savingEstado ? 'Guardando…' : `Marcar como ${ESTADO_LABEL[siguienteEstado]}`}
             </button>
           )}
+          {bloqueoAvance && <span className="text-[11px] text-amber-600 text-right">{bloqueoAvance}</span>}
           {estadoError && <span className="text-[11px] text-red-500">{estadoError}</span>}
           {puedeCancelar && (
             <button onClick={abrirCancelar} className="text-[11px] font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 mt-1">
