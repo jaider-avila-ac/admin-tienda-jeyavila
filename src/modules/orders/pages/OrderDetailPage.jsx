@@ -515,7 +515,10 @@ export default function OrderDetailPage() {
             disabled={tomando}
             className="input-field bg-white text-xs py-1.5 w-auto disabled:opacity-60"
           >
-            <option value="">Sin asignar</option>
+            {/* Desde "preparando" en adelante ya se exigió un responsable para llegar hasta
+                acá (ver avanceBloque) — quitarlo del todo contradiría eso, así que esa opción
+                ni se ofrece; el backend lo rechaza igual si de algún modo llegara a pedirse. */}
+            {!puedeVerSeguimiento && <option value="">Sin asignar</option>}
             {colaboradores.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
           </select>
         ) : order.colaborador_nombre ? (
