@@ -33,6 +33,14 @@ const ESTADO_LABEL = {
   devuelto:       'Devuelto',
 }
 
+// Qué significa cada paso de avance, para que quien lo marque sepa exactamente qué está
+// confirmando (no solo un nombre de estado sin contexto).
+const ESTADO_DESCRIPCION = {
+  preparando: 'Confirma que ya alguien está armando/empacando este pedido — no que ya está listo.',
+  enviado:    'Confirma que el paquete ya salió de la tienda rumbo al cliente, con la transportadora y guía de arriba.',
+  entregado:  'Confirma que el cliente ya recibió el pedido en sus manos.',
+}
+
 // Lista fija de transportadoras — el backend solo guarda el texto, no valida contra esto.
 const TRANSPORTADORAS = ['Envía', 'Coordinadora', 'Interrapidísimo', 'Servientrega', 'Otra']
 
@@ -428,6 +436,7 @@ export default function OrderDetailPage() {
   const avanceBloque = siguienteEstado && (
     <div className="section-card p-4 flex items-center justify-between gap-3">
       <div>
+        <p className="text-xs text-gray-500 mb-2">{ESTADO_DESCRIPCION[siguienteEstado]}</p>
         <button
           onClick={handleAvanzarEstado}
           disabled={savingEstado || Boolean(bloqueoAvance)}
